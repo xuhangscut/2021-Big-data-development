@@ -8,10 +8,10 @@ import java.util.ArrayList;
 public class SQLqueryPage {
     private JFrame frame = new JFrame();
     private JButton queryBtn = new JButton("查询");
-//    private JButton refreshBtn = new JButton("刷新");
+    private JButton refreshBtn = new JButton("刷新");
     private JTextArea queryText = new JTextArea();
     private JScrollPane jsp = new JScrollPane();
-    public void SQLqueryPage(String url, String userName, String userPassword){
+    public void SQLqueryPage(final String url, final String userName, final String userPassword){
         final sparkSQL s = new sparkSQL(url,userName,userPassword);
         frame.setBounds(200, 100, 850, 500);
         frame.setTitle("新建连接");
@@ -25,7 +25,7 @@ public class SQLqueryPage {
         JLabel info2 = new JLabel("请输入查询语句：");
         info2.setBounds(200,20,200,20);
         queryText.setBounds(200,50,600,300);
-//        refreshBtn.setBounds(150,400,100,20);
+        refreshBtn.setBounds(100,400,100,20);
         queryBtn.setBounds(700,400,100,20);
 
         queryBtn.addActionListener(new ActionListener() {
@@ -62,6 +62,25 @@ public class SQLqueryPage {
         JPanel infop = infos.SQLqueryInfo(url,userName,userPassword,tableName);
         jsp.setViewportView(infop);
         jsp.setBounds(20,70,165,280);
+        refreshBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                sparkSQL sNew = new sparkSQL(url,userName,userPassword);
+                final SQLqueryInfo infosNew = new SQLqueryInfo();
+                String[] itemsNew=sNew.showTable();
+                ArrayList<String> tableNamesNew=new ArrayList<String>();
+                for(int i=0;i<100;i++){
+                    if(itemsNew[i]==null){
+                        break;
+                    }
+                    tableNamesNew.add(itemsNew[i]);
+                }
+                final String[] tableNameNew=tableNamesNew.toArray(new String[tableNamesNew.size()]);
+                JPanel infopNew = infosNew.SQLqueryInfo(url,userName,userPassword,tableNameNew);
+                jsp.setViewportView(infopNew);
+            }
+        }
+
+        );
 
 
         frame.add(info);
@@ -69,7 +88,7 @@ public class SQLqueryPage {
         frame.add(jsp);
         frame.add(info2);
         frame.add(queryBtn);
-//        frame.add(refreshBtn);
+        frame.add(refreshBtn);
         frame.add(queryText);
         frame.setVisible(true);
     }

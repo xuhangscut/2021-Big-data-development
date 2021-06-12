@@ -52,11 +52,11 @@ public class SQLqueryMenu extends JFrame
                     String userName = userField.getText();
                     String userPassword = pwdField.getPassword().toString();
                     sparkSQL s = new sparkSQL(url, userName, userPassword);
-
+//                    sparkSQL s = new sparkSQL("jdbc:hive2://bigdata115.depts.bingosoft.net:22115/user13_db","user13","pass@bingo13");
                     JOptionPane.showMessageDialog(null, "连接成功！", "提示", JOptionPane.PLAIN_MESSAGE);
                     dispose();
                     final SQLqueryPage ui2 = new SQLqueryPage();
-//                    ui2.SQLqueryPage("jdbc:hive2://bigdata115.depts.bingosoft.net:22115/user18_db","user18","pass@bingo18");
+//                    ui2.SQLqueryPage("jdbc:hive2://bigdata115.depts.bingosoft.net:22115/user13_db","user13","pass@bingo13");
                     ui2.SQLqueryPage(url, userName, userPassword);
                 }
             }
