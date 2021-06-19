@@ -23,11 +23,21 @@ import java.util.Properties;
 import java.util.UUID;
 
 public class Main {
+    private static String accessKey = "64ABEA89A8CFB8297072";
+    private static String secretKey = "W0Y0ODdDN0I3MjkwNDcyQTlBODU4REE4OEMzNDRC";
+    //s3地址
+    private static String endpoint = "http://scut.depts.bingosoft.net:29997";
+    //上传到的桶
+    private static String bucket = "xuhang";
+    //上传文件的路径前缀
+    private static String keyPrefix = "upload/";
+    //上传数据间隔 单位毫秒
+    private static Integer period = 5000;
     //输入的kafka主题名称
     private static String inputTopic = "xh_buy_ticket_3";
     //kafka地址
     private static String bootstrapServers = "bigdata35.depts.bingosoft.net:29035,bigdata36.depts.bingosoft.net:29036,bigdata37.depts.bingosoft.net:29037";
-    private static String filePath = "D:/STUDY/大三下/大数据实训/class3/outputData2";
+//    private static String filePath = "D:/STUDY/大三下/大数据实训/class3/outputData2";
     public static class myWindowFunction implements WindowFunction<buy_record, String, String, TimeWindow>{
 
         @Override
@@ -62,7 +72,7 @@ public class Main {
                 kafkaProperties
         ));
         DataStream<buy_record> dataStream = dataStreamSource.map(x->JSONObject.parseObject(x, buy_record.class));
-        dataStream.keyBy(v->v.getDestination()).timeWindow(Time.seconds(60)).apply(new myWindowFunction()).writeAsText(filePath);
+        dataStream.keyBy(v->v.getDestination()).timeWindow(Time.seconds(60)).apply(new myWindowFunction()).writeUsingOutputFormat(new S3Writer(accessKey, secretKey, endpoint, bucket, keyPrefix, period));
 
         env.execute();
     }
